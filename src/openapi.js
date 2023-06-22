@@ -12,6 +12,7 @@ const configuration = new Configuration({
 
 module.exports.convertAudioToText = async (req,res) => {
     let file = req.files;
+    console.log('filesss',file);
  try {
     const resp = await openai.createTranscription(
         fs.createReadStream(file[0].path),
