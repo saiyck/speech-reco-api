@@ -6,7 +6,7 @@ const openapi = require('./openapi');
 const {upload} = require('../src/common/filehelpers');
 // const upload = multer({ dest: os.tmpdir() });
 router.post('/createtransaction',
-upload.any("file"),
+upload.single("file"),
 openapi.convertAudioToText);
 router.post('/createChatCompletion',openapi.createChatCompletion);
 router.post('/sendFinalResult',openapi.createFinalResults);

@@ -11,17 +11,24 @@ const configuration = new Configuration({
 
 
 module.exports.convertAudioToText = async (req,res) => {
-    let file = req.files;
-    console.log('filesss',file);
+  const { buffer, originalname } = req.file;
+  const filePath = `/tmp/${originalname}`;
  try {
+  fs.writeFile(filePath, buffer, async (writeErr) => {
+    if (writeErr) {
+      // Handle file write error
+      return res.status(500).json({ error: 'Failed to write file.' });
+    }
     const resp = await openai.createTranscription(
-        fs.createReadStream(file[0].path),
-        "whisper-1"
-      );
+      fs.createReadStream(filePath),
+      "whisper-1"
+    );
+    console.log('fileLocation',resp.data.text);
     res.status(200).json({
         message: resp.data.text,
         status:200
     })
+  });
  } catch (error) {
     console.log('eerrr',error);
     res.status(500).json({

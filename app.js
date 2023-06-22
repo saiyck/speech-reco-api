@@ -20,7 +20,7 @@ database.once('connected', () => {
     console.log('Database Connected');
 })
 
-app.use(express.static('public'));
+// app.use(express.static('public'));
 
 app.use(cors());
 
