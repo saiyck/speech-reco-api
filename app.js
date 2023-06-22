@@ -25,6 +25,10 @@ app.use(express.static('public'));
 app.use(cors());
 
 app.use(bodyParser.json());
+
+app.get('/',function(req,res){
+	res.status(200).send('Hello world');
+})
 app.use('/riktam/openapi/v1',allRoutes);
 
 app.listen(PORT, (error) =>{
