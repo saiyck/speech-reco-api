@@ -3,6 +3,7 @@ require('dotenv').config();
 const constants = require('../src/common/constants');
 let fs = require('fs');
 const Results = require('./schemas/createFinalEvaluation');
+const TestSchema = require('./schemas/createTest');
 
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_WHISPER_API_KEY,
@@ -73,5 +74,31 @@ module.exports.createFinalResults = async (req,res) => {
         error: error,
         status:500
     })
+  }
+}
+
+module.exports.createOnlineTest = async (req,res) => {
+  let data = req.body;
+  const db = TestSchema(data)
+  try {
+    const dataToSave = await db.save();
+    res.status(200).json(dataToSave);
+  } catch (error) {
+    res.status(500).json({
+      error: error,
+      status:500
+  })
+  }
+}
+
+module.exports.getPromptMessage = async (req,res) => {
+  let id = req.params.id;
+  try {
+    const data = await TestSchema.findById(id);
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({
+      error
+    });
   }
 }
