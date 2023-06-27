@@ -91,6 +91,47 @@ module.exports.createOnlineTest = async (req,res) => {
   }
 }
 
+module.exports.updateEmailId = async (req,res) => {
+  let id = req.params.id;
+  let body = req.body;
+  try {
+    await TestSchema.findOneAndUpdate(
+      {_id: id},
+      {
+        $set: {userId : body.email}
+     },
+     {strict: false}
+    )
+    const updatedUser = await TestSchema.findById(id);
+    res.status(200).json(updatedUser)
+  } catch (error) {
+    res.status(500).json({
+      error
+    })
+  }
+}
+
+
+module.exports.updateUserMessages = async (req,res) => {
+  let id = req.params.id;
+  let body = req.body;
+  try {
+    await TestSchema.findOneAndUpdate(
+      {_id: id},
+      {
+        $set: {questions : body.messages}
+     },
+     {strict: false}
+    )
+    const updatedUser = await TestSchema.findById(id);
+    res.status(200).json(updatedUser)
+  } catch (error) {
+    res.status(500).json({
+      error
+    })
+  }
+}
+
 module.exports.getPromptMessage = async (req,res) => {
   let id = req.params.id;
   try {
@@ -102,3 +143,16 @@ module.exports.getPromptMessage = async (req,res) => {
     });
   }
 }
+
+module.exports.getAllUserInfo = async (req,res) => {
+  try {
+    let data = await TestSchema.find({userId: { $exists: true }, questions: { $exists: true }});
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({
+      error
+    });
+  }
+}
+
+

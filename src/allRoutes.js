@@ -12,5 +12,7 @@ router.post('/createChatCompletion',openapi.createChatCompletion);
 router.post('/sendFinalResult',openapi.createFinalResults);
 router.post('/createOnlineTest',openapi.createOnlineTest);
 router.get('/getPromptMessage/:id',openapi.getPromptMessage);
-
+router.put('/updateEmail/:id',openapi.updateEmailId);
+router.put('/updateUserMessages/:id',openapi.updateUserMessages);
+router.get('/getAllUserInfo',openapi.getAllUserInfo);
 module.exports = router;
