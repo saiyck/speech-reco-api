@@ -8,7 +8,7 @@ const {upload} = require('../src/common/filehelpers');
 router.post('/createtransaction',
 upload.single("file"),
 openapi.convertAudioToText);
-router.post('/createChatCompletion',openapi.createChatCompletion);
+router.post('/createChatCompletion/:id',openapi.createChatCompletion);
 router.post('/sendFinalResult',openapi.createFinalResults);
 router.post('/createOnlineTest',openapi.createOnlineTest);
 router.get('/getPromptMessage/:id',openapi.getPromptMessage);

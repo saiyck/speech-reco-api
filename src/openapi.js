@@ -42,6 +42,7 @@ module.exports.convertAudioToText = async (req,res) => {
 
 module.exports.createChatCompletion = async (req,res) => {
     let {systemPrompt,messages} = req.body;
+    let id = req.params.id;
     try {
         const completion = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
@@ -49,6 +50,7 @@ module.exports.createChatCompletion = async (req,res) => {
                 {"role": "system", "content": systemPrompt},
                 ...messages],
           });
+         await setUserMessages(id,messages);
         res.status(200).json({
             message:completion.data.choices[0].message.content,
             status:200
@@ -111,19 +113,27 @@ module.exports.updateEmailId = async (req,res) => {
   }
 }
 
+const setUserMessages = async (id,messages) => {
+    try {
+      await TestSchema.findOneAndUpdate(
+        {_id: id},
+        {
+          $set: {questions : messages}
+       },
+       {strict: false}
+      )
+     return await TestSchema.findById(id);
+    } catch (error) {
+       return error;
+    }
+}
+
 
 module.exports.updateUserMessages = async (req,res) => {
   let id = req.params.id;
   let body = req.body;
   try {
-    await TestSchema.findOneAndUpdate(
-      {_id: id},
-      {
-        $set: {questions : body.messages}
-     },
-     {strict: false}
-    )
-    const updatedUser = await TestSchema.findById(id);
+    const updatedUser = await setUserMessages(id,body.messages);
     res.status(200).json(updatedUser)
   } catch (error) {
     res.status(500).json({
