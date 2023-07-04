@@ -39,21 +39,57 @@ module.exports.convertAudioToText = async (req,res) => {
  }
 }
 
+const getCodeEditorStatus = async(prompt) => {
+   try {
+      const completion = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo-0613",
+        messages: [
+        {role: "user", content: prompt}
+        ],
+        functions: [
+            {
+              name: "show_code_editor",
+              description: "User need to use code editor to provide there example",
+              parameters: {
+                type: "object",
+                properties: {
+                  show: {
+                    type: "boolean",
+                    description: "get the status"
+                  }
+                }
+              }
+            }
+          ]
+      });
+      let data = completion.data.choices[0];
+      if(data.finish_reason == "function_call"){
+        return true;
+      }else{
+        return false
+      }
+   } catch (error) {
+    
+   }
+}
+
 
 module.exports.createChatCompletion = async (req,res) => {
     let {systemPrompt,messages} = req.body;
     let id = req.params.id;
     try {
         const completion = await openai.createChatCompletion({
-            model: "gpt-3.5-turbo",
+            model: "gpt-3.5-turbo-16k",
             messages: [
                 {"role": "system", "content": systemPrompt},
                 ...messages],
           });
          await setUserMessages(id,messages);
+         let status = await getCodeEditorStatus(completion.data.choices[0].message.content);
         res.status(200).json({
             message:completion.data.choices[0].message.content,
-            status:200
+            status:200,
+            editorStatus: status
         })
      } catch (error) {
         res.status(500).json({
