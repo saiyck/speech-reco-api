@@ -15,4 +15,5 @@ router.get('/getPromptMessage/:id',openapi.getPromptMessage);
 router.put('/updateEmail/:id',openapi.updateEmailId);
 router.put('/updateUserMessages/:id',openapi.updateUserMessages);
 router.get('/getAllUserInfo',openapi.getAllUserInfo);
+router.get('/getCodeEditorStatus',openapi.getCodeEditorStatus);
 module.exports = router;
