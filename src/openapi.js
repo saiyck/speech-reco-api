@@ -79,7 +79,7 @@ module.exports.createChatCompletion = async (req,res) => {
     let id = req.params.id;
     try {
         const completion = await openai.createChatCompletion({
-            model: "gpt-3.5-turbo-16k",
+            model: "gpt-3.5-turbo",
             messages: [
                 {"role": "system", "content": systemPrompt},
                 ...messages],
