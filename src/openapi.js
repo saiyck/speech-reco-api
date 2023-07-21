@@ -116,6 +116,31 @@ const getCodeEditorStatuss = async (prompt) => {
 
 module.exports.createChatCompletion = async (req, res) => {
   let { systemPrompt, messages } = req.body;
+  try {
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [
+        { "role": "system", "content": systemPrompt },
+        ...messages],
+    });
+    const prompt = completion.data.choices[0].message.content;
+    const codeStatus = await getCodeEditorStatuss(prompt);
+    res.status(200).json({
+      message: prompt,
+      status: 200,
+      editorStatus: codeStatus
+    })
+  } catch (error) {
+    res.status(500).json({
+      error: "error fetching response",
+      status: 500,
+      message: error
+    })
+  }
+}
+
+module.exports.createChatCompletionById = async (req, res) => {
+  let { systemPrompt, messages } = req.body;
   let id = req.params.id;
   try {
     const completion = await openai.createChatCompletion({
